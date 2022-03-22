@@ -1,2 +1,0 @@
-# Compiti
-To-do list
