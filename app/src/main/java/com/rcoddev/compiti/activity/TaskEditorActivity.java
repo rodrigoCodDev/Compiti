@@ -1,8 +1,10 @@
-package com.rcoddev.compiti;
+package com.rcoddev.compiti.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.rcoddev.compiti.R;
 
 public class TaskEditorActivity extends AppCompatActivity {
 
