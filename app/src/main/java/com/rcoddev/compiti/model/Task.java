@@ -3,15 +3,15 @@ package com.rcoddev.compiti.model;
 public class Task {
     private Long id;
     private String name;
-    private String text;
+    private String annotation;
     private String date;
 
     public Task() {}
 
-    public Task(Long id, String name, String text, String date) {
+    public Task(Long id, String name, String annotation, String date) {
         this.id = id;
         this.name = name;
-        this.text = text;
+        this.annotation = annotation;
         this.date = date;
     }
 
@@ -31,12 +31,12 @@ public class Task {
         this.name = name;
     }
 
-    public String getText() {
-        return text;
+    public String getAnnotation() {
+        return annotation;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setAnnotation(String annotation) {
+        this.annotation = annotation;
     }
 
     public String getDate() {
