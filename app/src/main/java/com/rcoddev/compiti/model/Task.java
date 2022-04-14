@@ -1,9 +1,10 @@
 package com.rcoddev.compiti.model;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Task {
+public class Task implements Serializable {
     private Long id;
     private String name;
     private String annotation;

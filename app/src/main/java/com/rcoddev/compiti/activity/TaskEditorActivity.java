@@ -20,6 +20,7 @@ import java.util.Date;
 public class TaskEditorActivity extends AppCompatActivity {
 
     private ActivityTaskEditorBinding binding;
+    private Task currentTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +29,13 @@ public class TaskEditorActivity extends AppCompatActivity {
         binding = ActivityTaskEditorBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         View view = binding.getRoot();
+
+        currentTask = (Task) getIntent().getSerializableExtra("selectedTask");
+
+        if ( currentTask != null ){
+            binding.textInputName.setText( currentTask.getName() );
+            binding.textInputAnnotation.setText( currentTask.getAnnotation() );
+        }
     }
 
     @Override
@@ -39,9 +47,10 @@ public class TaskEditorActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
         switch (item.getItemId()) {
             case R.id.check_task:
+                TaskDAO taskDAO = new TaskDAO(binding.getRoot().getContext());
+
                 String name = binding.textInputName.getText().toString();
                 String annotation = binding.textInputName.getText().toString();
 
@@ -50,8 +59,13 @@ public class TaskEditorActivity extends AppCompatActivity {
                 myTask.setAnnotation(annotation);
                 myTask.setDate(new Date());
 
-                TaskDAO taskDAO = new TaskDAO(binding.getRoot().getContext());
-                taskDAO.create(myTask);
+                if (currentTask != null) {
+                    myTask.setId(currentTask.getId());
+                    taskDAO.update(myTask);
+
+                } else {
+                    taskDAO.create(myTask);
+                }
 
                 return true;
 

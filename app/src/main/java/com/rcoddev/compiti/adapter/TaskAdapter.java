@@ -1,5 +1,7 @@
 package com.rcoddev.compiti.adapter;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,9 +9,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.rcoddev.compiti.R;
+import com.rcoddev.compiti.activity.TaskEditorActivity;
+import com.rcoddev.compiti.dao.TaskDAO;
+import com.rcoddev.compiti.databinding.ActivityTaskEditorBinding;
 import com.rcoddev.compiti.model.Task;
 
 import java.util.List;
@@ -41,6 +47,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             @Override
             public void onClick(View view) {
                 Toast.makeText( view.getContext(), "Click", Toast.LENGTH_LONG).show();
+
+                Intent intent = new Intent( view.getContext(), TaskEditorActivity.class);
+                intent.putExtra("selectedTask", task);
+
+                view.getContext().startActivity( intent );
             }
         });
 
@@ -48,6 +59,32 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             @Override
             public boolean onLongClick(View view) {
                 Toast.makeText( view.getContext(), "Long Click", Toast.LENGTH_LONG).show();
+
+                AlertDialog.Builder dialog = new AlertDialog.Builder( view.getContext() );
+
+                dialog.setTitle("Confirm deletion");
+                dialog.setMessage("Do you want to delete the task \"" + task.getName() + "\" ?");
+
+                dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        TaskDAO taskDAO = new TaskDAO( view.getContext() );
+
+                        if ( taskDAO.delete(task) ){
+                            taskList = taskDAO.read();
+                            notifyDataSetChanged();
+
+                            Toast.makeText( view.getContext(), "Sucesso ao excluir tarefa", Toast.LENGTH_LONG);
+                        } else {
+                            Toast.makeText( view.getContext(), "Erro ao excluir tarefa", Toast.LENGTH_LONG);
+                        }
+                    }
+                });
+
+                dialog.setNegativeButton("No", null);
+
+                dialog.create();
+                dialog.show();
 
                 return true;
             }
@@ -71,5 +108,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             name = itemView.findViewById(R.id.textTaskName);
             date = itemView.findViewById(R.id.textTaskDate);
         }
+
     }
 }

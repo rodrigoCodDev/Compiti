@@ -83,7 +83,7 @@ public class TaskDAO implements ITaskDAO {
 
     @Override
     public List<Task> read() {
-        List<Task> tarefas = new ArrayList<>();
+        List<Task> tasks = new ArrayList<>();
 
         String sql = "SELECT * FROM " + DbHelper.TASK_TABLE + " ;";
         Cursor c = reader.rawQuery(sql, null);
@@ -103,14 +103,14 @@ public class TaskDAO implements ITaskDAO {
 
             try {
                 Date formattedDate = sdf.parse(date);
-                Task tarefa = new Task(id, name, annotation, formattedDate);
-                tarefas.add(tarefa);
+                Task task = new Task(id, name, annotation, formattedDate);
+                tasks.add(task);
 
             } catch (ParseException e) {
                 e.printStackTrace();
             }
         }
 
-        return tarefas;
+        return tasks;
     }
 }
