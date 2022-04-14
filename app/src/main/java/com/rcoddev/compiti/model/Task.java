@@ -3,16 +3,20 @@ package com.rcoddev.compiti.model;
 public class Task {
     private Long id;
     private String name;
+    private String text;
     private String date;
+
+    public Task() {}
+
+    public Task(Long id, String name, String text, String date) {
+        this.id = id;
+        this.name = name;
+        this.text = text;
+        this.date = date;
+    }
 
     public Long getId() {
         return id;
-    }
-
-    public Task(Long id, String name, String date) {
-        this.id = id;
-        this.name = name;
-        this.date = date;
     }
 
     public void setId(Long id) {
@@ -25,6 +29,14 @@ public class Task {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 
     public String getDate() {

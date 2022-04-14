@@ -68,9 +68,9 @@ public class FirstFragment extends Fragment {
     private void loadList() {
         // Test
         List<Task> list = new ArrayList<>();
-        list.add(new Task((long) 1, "Task 1", "1/2/2022"));
-        list.add(new Task((long) 2, "Task 2", "2/2/2022"));
-        list.add(new Task((long) 3, "Task 3", "3/2/2022"));
+        list.add(new Task((long) 1, "Task 1", "", "1/2/2022"));
+        list.add(new Task((long) 2, "Task 2", "", "2/2/2022"));
+        list.add(new Task((long) 3, "Task 3", "", "3/2/2022"));
 
         taskAdapter = new TaskAdapter(list);
 
