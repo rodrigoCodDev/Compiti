@@ -29,7 +29,7 @@ public class TaskDAO implements ITaskDAO {
     @Override
     public boolean create(Task task) {
         ContentValues cv = new ContentValues();
-        cv.put("nome", task.getName());
+        cv.put("name", task.getName());
         cv.put("annotation", task.getAnnotation());
         cv.put("date", task.getFormattedDate());
 

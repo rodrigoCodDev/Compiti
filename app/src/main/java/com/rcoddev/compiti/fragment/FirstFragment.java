@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.rcoddev.compiti.R;
 import com.rcoddev.compiti.adapter.TaskAdapter;
+import com.rcoddev.compiti.dao.TaskDAO;
 import com.rcoddev.compiti.databinding.FragmentFirstBinding;
 import com.rcoddev.compiti.model.Task;
 
@@ -67,9 +68,8 @@ public class FirstFragment extends Fragment {
     }
 
     private void loadList() {
-        // Test
-        List<Task> list = new ArrayList<>();
-        list.add(new Task((long) 1, "Task 1", "", new Date()));
+        TaskDAO taskDAO = new TaskDAO(binding.getRoot().getContext());
+        List<Task> list = taskDAO.read();
 
         taskAdapter = new TaskAdapter(list);
 
