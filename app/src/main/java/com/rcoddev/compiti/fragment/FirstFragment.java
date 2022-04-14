@@ -20,6 +20,7 @@ import com.rcoddev.compiti.databinding.FragmentFirstBinding;
 import com.rcoddev.compiti.model.Task;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class FirstFragment extends Fragment {
@@ -68,9 +69,7 @@ public class FirstFragment extends Fragment {
     private void loadList() {
         // Test
         List<Task> list = new ArrayList<>();
-        list.add(new Task((long) 1, "Task 1", "", "1/2/2022"));
-        list.add(new Task((long) 2, "Task 2", "", "2/2/2022"));
-        list.add(new Task((long) 3, "Task 3", "", "3/2/2022"));
+        list.add(new Task((long) 1, "Task 1", "", new Date()));
 
         taskAdapter = new TaskAdapter(list);
 

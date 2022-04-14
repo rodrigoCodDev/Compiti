@@ -1,6 +1,5 @@
 package com.rcoddev.compiti.adapter;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +35,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         Task task = taskList.get(position);
 
         holder.name.setText(task.getName());
-        holder.date.setText(task.getDate());
+        holder.date.setText(task.getFormattedDate());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

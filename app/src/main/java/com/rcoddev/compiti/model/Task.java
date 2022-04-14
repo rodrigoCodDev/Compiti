@@ -1,14 +1,17 @@
 package com.rcoddev.compiti.model;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class Task {
     private Long id;
     private String name;
     private String annotation;
-    private String date;
+    private Date date;
 
     public Task() {}
 
-    public Task(Long id, String name, String annotation, String date) {
+    public Task(Long id, String name, String annotation, Date date) {
         this.id = id;
         this.name = name;
         this.annotation = annotation;
@@ -39,11 +42,18 @@ public class Task {
         this.annotation = annotation;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
+    }
+
+    public String getFormattedDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        String date = sdf.format( this.getDate() );
+
+        return date;
     }
 }
