@@ -69,7 +69,7 @@ public class TaskDAO implements ITaskDAO {
     @Override
     public boolean delete(Task task) {
         try {
-            String[] args = {task.getId().toString()};
+            String[] args = { task.getId().toString() };
             writer.delete(DbHelper.TASK_TABLE, "id = ?", args);
             Log.i("INFO", "Sucesso ao excluir dado na tabela");
 
