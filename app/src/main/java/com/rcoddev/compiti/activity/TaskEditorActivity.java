@@ -2,11 +2,13 @@ package com.rcoddev.compiti.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.rcoddev.compiti.R;
@@ -16,6 +18,7 @@ import com.rcoddev.compiti.databinding.ActivityTaskEditorBinding;
 import com.rcoddev.compiti.model.Task;
 
 import java.util.Date;
+import java.util.List;
 
 public class TaskEditorActivity extends AppCompatActivity {
 
@@ -52,7 +55,7 @@ public class TaskEditorActivity extends AppCompatActivity {
                 TaskDAO taskDAO = new TaskDAO(binding.getRoot().getContext());
 
                 String name = binding.textInputName.getText().toString();
-                String annotation = binding.textInputName.getText().toString();
+                String annotation = binding.textInputAnnotation.getText().toString();
 
                 Task myTask = new Task();
                 myTask.setName(name);
@@ -65,6 +68,9 @@ public class TaskEditorActivity extends AppCompatActivity {
 
                 } else {
                     taskDAO.create(myTask);
+
+                    List<Task> tasks = taskDAO.read();
+                    currentTask = tasks.get(tasks.size() - 1);
                 }
 
                 return true;

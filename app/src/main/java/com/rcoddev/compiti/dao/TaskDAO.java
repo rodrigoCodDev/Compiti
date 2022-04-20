@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.rcoddev.compiti.model.Task;
 
@@ -17,10 +18,12 @@ import java.util.List;
 
 public class TaskDAO implements ITaskDAO {
 
+    private Context context;
     private SQLiteDatabase writer;
     private SQLiteDatabase reader;
 
     public TaskDAO(Context context) {
+        this.context = context;
         DbHelper db = new DbHelper( context );
         writer = db.getWritableDatabase();
         reader = db.getReadableDatabase();
@@ -35,10 +38,14 @@ public class TaskDAO implements ITaskDAO {
 
         try {
             writer.insert(DbHelper.TASK_TABLE, null, cv);
-            Log.i("INFO", "Sucesso ao salvar dado na tabela");
+
+            Log.i("INFO", "Success saving data");
+            Toast.makeText( context, "Saved", Toast.LENGTH_LONG).show();
 
         } catch (Exception e) {
-            Log.e("INFO", "Erro ao salvar dado na tabela: " + e.getMessage());
+            Log.e("INFO", "Error saving data" + e.getMessage());
+            Toast.makeText( context, "Error saving data", Toast.LENGTH_LONG).show();
+
             return false;
         }
 
@@ -56,10 +63,13 @@ public class TaskDAO implements ITaskDAO {
             String[] args = {task.getId().toString()};
             writer.update(DbHelper.TASK_TABLE, cv, "id = ?", args);
 
-            Log.i("INFO", "Sucesso ao atualizar dado na tabela");
+            Log.i("INFO", "Success in updating data");
+            Toast.makeText( context, "Updated", Toast.LENGTH_LONG).show();
 
         } catch (Exception e) {
-            Log.e("INFO", "Erro ao atualizar dado na tabela: " + e.getMessage());
+            Log.e("INFO", "Error updating data: " + e.getMessage());
+            Toast.makeText( context, "Error updating data", Toast.LENGTH_LONG).show();
+
             return false;
         }
 
@@ -71,10 +81,14 @@ public class TaskDAO implements ITaskDAO {
         try {
             String[] args = { task.getId().toString() };
             writer.delete(DbHelper.TASK_TABLE, "id = ?", args);
-            Log.i("INFO", "Sucesso ao excluir dado na tabela");
+
+            Log.i("INFO", "Success deleting data");
+            Toast.makeText( context, "Deleted", Toast.LENGTH_LONG).show();
 
         } catch (Exception e) {
-            Log.e("INFO", "Erro ao excluir dado na tabela: " + e.getMessage());
+            Log.e("INFO", "Error deleting data: " + e.getMessage());
+            Toast.makeText( context, "Error deleting data", Toast.LENGTH_LONG).show();
+
             return false;
         }
 

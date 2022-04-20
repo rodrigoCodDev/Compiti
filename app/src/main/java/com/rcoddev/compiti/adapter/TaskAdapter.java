@@ -46,7 +46,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText( view.getContext(), "Click", Toast.LENGTH_LONG).show();
+                Toast.makeText( view.getContext(), "Edit", Toast.LENGTH_LONG).show();
 
                 Intent intent = new Intent( view.getContext(), TaskEditorActivity.class);
                 intent.putExtra("selectedTask", task);
@@ -58,8 +58,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                Toast.makeText( view.getContext(), "Long Click", Toast.LENGTH_LONG).show();
-
                 AlertDialog.Builder dialog = new AlertDialog.Builder( view.getContext() );
 
                 dialog.setTitle("Confirm deletion");
@@ -73,10 +71,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                         if ( taskDAO.delete(task) ){
                             taskList = taskDAO.read();
                             notifyDataSetChanged();
-
-                            Toast.makeText( view.getContext(), "Sucesso ao excluir tarefa", Toast.LENGTH_LONG);
-                        } else {
-                            Toast.makeText( view.getContext(), "Erro ao excluir tarefa", Toast.LENGTH_LONG);
                         }
                     }
                 });

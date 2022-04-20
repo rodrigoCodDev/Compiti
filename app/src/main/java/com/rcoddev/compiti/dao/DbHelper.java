@@ -27,9 +27,9 @@ public class DbHelper extends SQLiteOpenHelper {
 
         try {
             db.execSQL( sql );
-            Log.i("INFO DB", "Sucesso ao criar tabela");
+            Log.i("INFO DB", "Success creating table");
         } catch (Exception e) {
-            Log.e("INFO DB", "Erro ao criar a tabela: " + e.getMessage());
+            Log.e("INFO DB", "Error creating table: " + e.getMessage());
         }
     }
 
