@@ -8,8 +8,6 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 public class DbHelper extends SQLiteOpenHelper {
-
-    // Versão do App
     public static int VERSION = 1;
     public static String DB_NAME = "DB_TASKS";
     public static String TASK_TABLE = "tasks";
@@ -37,8 +35,10 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        String sql = "DROP TABLE IF EXISTS " + TASK_TABLE + " ;";
+        // String sql = "DROP TABLE IF EXISTS " + TASK_TABLE + " ;";
+        // String sql = "ALTER TABLE " + TASK_TABLE + " ADD COLUMN status VARCHAR(1)";
 
+        /*
         try {
             db.execSQL( sql );
             onCreate( db );
@@ -46,5 +46,6 @@ public class DbHelper extends SQLiteOpenHelper {
         } catch (Exception e) {
             Log.i("INFO DB", "Erro ao atualizar app" + e.getStackTrace());
         }
+         */
     }
 }
