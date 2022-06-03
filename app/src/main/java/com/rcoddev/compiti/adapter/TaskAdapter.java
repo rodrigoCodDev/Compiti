@@ -14,19 +14,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.rcoddev.compiti.R;
 import com.rcoddev.compiti.activity.TaskEditorActivity;
-import com.rcoddev.compiti.dao.TaskDAO;
+//import com.rcoddev.compiti.dao.TaskDAO;
 import com.rcoddev.compiti.databinding.ActivityTaskEditorBinding;
-import com.rcoddev.compiti.model.Task;
+//import com.rcoddev.compiti.model.Task;
 
 import java.util.List;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
 
-    private List<Task> taskList;
+//    private List<Task> taskList;
 
-    public TaskAdapter(List<Task> taskList) {
-        this.taskList = taskList;
-    }
+//    public TaskAdapter(List<Task> taskList) {
+//        this.taskList = taskList;
+//    }
 
     @NonNull
     @Override
@@ -38,10 +38,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
-        Task task = taskList.get(position);
-
-        holder.name.setText(task.getName());
-        holder.date.setText(task.getFormattedDate());
+//        Task task = taskList.get(position);
+//
+//        holder.name.setText(task.getName());
+//        holder.date.setText(task.getFormattedDate());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,7 +49,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                 Toast.makeText( view.getContext(), "Edit", Toast.LENGTH_LONG).show();
 
                 Intent intent = new Intent( view.getContext(), TaskEditorActivity.class);
-                intent.putExtra("selectedTask", task);
+//                intent.putExtra("selectedTask", task);
 
                 view.getContext().startActivity( intent );
             }
@@ -61,17 +61,12 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                 AlertDialog.Builder dialog = new AlertDialog.Builder( view.getContext() );
 
                 dialog.setTitle("Confirm deletion");
-                dialog.setMessage("Do you want to delete the task \"" + task.getName() + "\" ?");
+//                dialog.setMessage("Do you want to delete the task \"" + task.getName() + "\" ?");
 
                 dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        TaskDAO taskDAO = new TaskDAO( view.getContext() );
 
-                        if ( taskDAO.delete(task) ){
-                            taskList = taskDAO.read();
-                            notifyDataSetChanged();
-                        }
                     }
                 });
 
@@ -87,7 +82,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     @Override
     public int getItemCount() {
-        return taskList.size();
+//        return taskList.size();
+        return 0;
     }
 
 
