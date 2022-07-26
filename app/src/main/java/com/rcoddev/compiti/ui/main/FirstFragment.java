@@ -14,10 +14,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.rcoddev.compiti.R;
 import com.rcoddev.compiti.adapter.TaskAdapter;
-import com.rcoddev.compiti.db.local.TaskDao;
 import com.rcoddev.compiti.databinding.FragmentFirstBinding;
-import com.rcoddev.compiti.model.Task;
+import com.rcoddev.compiti.model.TaskSql;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FirstFragment extends Fragment {
@@ -64,8 +64,13 @@ public class FirstFragment extends Fragment {
     }
 
     private void loadList() {
+        /*
         TaskDao taskDao = new TaskDao(binding.getRoot().getContext());
         List<Task> list = taskDao.read();
+         */
+
+        List<TaskSql> list = new ArrayList<>();
+        list = TaskSql.listAll(TaskSql.class);
 
         taskAdapter = new TaskAdapter(list);
 

@@ -9,12 +9,18 @@ import android.view.View;
 
 import androidx.navigation.ui.AppBarConfiguration;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.rcoddev.compiti.R;
+import com.rcoddev.compiti.model.Task;
+import com.rcoddev.compiti.model.TaskSql;
 import com.rcoddev.compiti.ui.editor.TaskEditorActivity;
 import com.rcoddev.compiti.databinding.ActivityMainBinding;
 
 import android.view.Menu;
 import android.view.MenuItem;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,10 +31,25 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.toolbar);
+
+        /*
+        DatabaseReference tasksRef = db.child("tasks");
+
+        List<TaskSql> taskSqls = TaskSql.listAll(TaskSql.class);
+
+        for (TaskSql myTaskSql : taskSqls) {
+            Task task = new Task(myTaskSql);
+            String id = myTaskSql.getId().toString();
+
+            tasksRef.child(id).setValue(task);
+        }
+         */
 
         // NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         // appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();

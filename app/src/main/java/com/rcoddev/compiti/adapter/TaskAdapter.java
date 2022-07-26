@@ -13,18 +13,17 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.rcoddev.compiti.R;
+import com.rcoddev.compiti.model.TaskSql;
 import com.rcoddev.compiti.ui.editor.TaskEditorActivity;
-import com.rcoddev.compiti.db.local.TaskDao;
-import com.rcoddev.compiti.model.Task;
 
 import java.util.List;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
 
-    private List<Task> taskList;
+    private List<TaskSql> taskSqlList;
 
-    public TaskAdapter(List<Task> taskList) {
-        this.taskList = taskList;
+    public TaskAdapter(List<TaskSql> taskSqlList) {
+        this.taskSqlList = taskSqlList;
     }
 
     @NonNull
@@ -37,10 +36,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
-        Task task = taskList.get(position);
+        TaskSql taskSql = taskSqlList.get(position);
 
-        holder.name.setText(task.getName());
-        holder.date.setText(task.getFormattedDate());
+        holder.name.setText(taskSql.getName());
+        holder.date.setText(taskSql.getFormattedDate());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,7 +47,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                 Toast.makeText( view.getContext(), "Edit", Toast.LENGTH_LONG).show();
 
                 Intent intent = new Intent( view.getContext(), TaskEditorActivity.class);
-                intent.putExtra("selectedTask", task);
+                intent.putExtra("idSelectedTask", taskSql.getId());
 
                 view.getContext().startActivity( intent );
             }
@@ -60,17 +59,15 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                 AlertDialog.Builder dialog = new AlertDialog.Builder( view.getContext() );
 
                 dialog.setTitle("Confirm deletion");
-                dialog.setMessage("Do you want to delete the task \"" + task.getName() + "\" ?");
+                dialog.setMessage("Do you want to delete the task \"" + taskSql.getName() + "\" ?");
 
                 dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        TaskDao taskDao = new TaskDao( view.getContext() );
+                        taskSql.delete();
 
-                        if ( taskDao.delete(task) ){
-                            taskList = taskDao.read();
-                            notifyDataSetChanged();
-                        }
+                        taskSqlList = TaskSql.listAll(TaskSql.class);
+                        notifyDataSetChanged();
                     }
                 });
 
@@ -86,7 +83,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     @Override
     public int getItemCount() {
-        return taskList.size();
+        return taskSqlList.size();
     }
 
 

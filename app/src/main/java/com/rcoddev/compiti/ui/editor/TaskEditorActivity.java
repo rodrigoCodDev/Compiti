@@ -3,23 +3,22 @@ package com.rcoddev.compiti.ui.editor;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.rcoddev.compiti.R;
-import com.rcoddev.compiti.db.local.TaskDao;
 import com.rcoddev.compiti.databinding.ActivityTaskEditorBinding;
-import com.rcoddev.compiti.model.Task;
+import com.rcoddev.compiti.model.TaskSql;
 
 import java.util.Date;
-import java.util.List;
 
 public class TaskEditorActivity extends AppCompatActivity {
 
     private ActivityTaskEditorBinding binding;
-    private Task currentTask;
+    private TaskSql currentTaskSql;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,11 +28,13 @@ public class TaskEditorActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         View view = binding.getRoot();
 
-        currentTask = (Task) getIntent().getSerializableExtra("selectedTask");
+        Long idSelectedTask = (Long) getIntent().getSerializableExtra("idSelectedTask");
 
-        if ( currentTask != null ){
-            binding.textInputName.setText( currentTask.getName() );
-            binding.textInputAnnotation.setText( currentTask.getAnnotation() );
+        if ( idSelectedTask != null ){
+            currentTaskSql = TaskSql.findById(TaskSql.class, idSelectedTask);
+
+            binding.textInputName.setText( currentTaskSql.getName() );
+            binding.textInputAnnotation.setText( currentTaskSql.getAnnotation() );
         }
     }
 
@@ -48,25 +49,24 @@ public class TaskEditorActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.check_task:
-                TaskDao taskDao = new TaskDao(binding.getRoot().getContext());
-
                 String name = binding.textInputName.getText().toString();
                 String annotation = binding.textInputAnnotation.getText().toString();
 
-                Task myTask = new Task();
-                myTask.setName(name);
-                myTask.setAnnotation(annotation);
-                myTask.setDate(new Date());
+                TaskSql myTaskSql = new TaskSql();
 
-                if (currentTask != null) {
-                    myTask.setId(currentTask.getId());
-                    taskDao.update(myTask);
+                if (currentTaskSql != null) {
+                    myTaskSql = currentTaskSql;
+                }
 
-                } else {
-                    taskDao.create(myTask);
+                myTaskSql.setName(name);
+                myTaskSql.setAnnotation(annotation);
+                myTaskSql.setDate(new Date());
 
-                    List<Task> tasks = taskDao.read();
-                    currentTask = tasks.get(tasks.size() - 1);
+                try {
+                    myTaskSql.save();
+                } catch (Exception e) {
+                    Log.e("Erro ao salvar", e.getMessage());
+                    onDestroy();
                 }
 
                 return true;
