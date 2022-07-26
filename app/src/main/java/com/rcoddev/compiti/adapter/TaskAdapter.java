@@ -13,9 +13,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.rcoddev.compiti.R;
-import com.rcoddev.compiti.activity.TaskEditorActivity;
-import com.rcoddev.compiti.dao.TaskDAO;
-import com.rcoddev.compiti.databinding.ActivityTaskEditorBinding;
+import com.rcoddev.compiti.ui.editor.TaskEditorActivity;
+import com.rcoddev.compiti.db.local.TaskDao;
 import com.rcoddev.compiti.model.Task;
 
 import java.util.List;
@@ -66,10 +65,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                 dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        TaskDAO taskDAO = new TaskDAO( view.getContext() );
+                        TaskDao taskDao = new TaskDao( view.getContext() );
 
-                        if ( taskDAO.delete(task) ){
-                            taskList = taskDAO.read();
+                        if ( taskDao.delete(task) ){
+                            taskList = taskDao.read();
                             notifyDataSetChanged();
                         }
                     }

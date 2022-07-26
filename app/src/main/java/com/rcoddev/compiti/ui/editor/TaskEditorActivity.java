@@ -1,19 +1,15 @@
-package com.rcoddev.compiti.activity;
+package com.rcoddev.compiti.ui.editor;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
-import com.google.android.material.textfield.TextInputEditText;
 import com.rcoddev.compiti.R;
-import com.rcoddev.compiti.dao.TaskDAO;
-import com.rcoddev.compiti.databinding.ActivityMainBinding;
+import com.rcoddev.compiti.db.local.TaskDao;
 import com.rcoddev.compiti.databinding.ActivityTaskEditorBinding;
 import com.rcoddev.compiti.model.Task;
 
@@ -52,7 +48,7 @@ public class TaskEditorActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.check_task:
-                TaskDAO taskDAO = new TaskDAO(binding.getRoot().getContext());
+                TaskDao taskDao = new TaskDao(binding.getRoot().getContext());
 
                 String name = binding.textInputName.getText().toString();
                 String annotation = binding.textInputAnnotation.getText().toString();
@@ -64,12 +60,12 @@ public class TaskEditorActivity extends AppCompatActivity {
 
                 if (currentTask != null) {
                     myTask.setId(currentTask.getId());
-                    taskDAO.update(myTask);
+                    taskDao.update(myTask);
 
                 } else {
-                    taskDAO.create(myTask);
+                    taskDao.create(myTask);
 
-                    List<Task> tasks = taskDAO.read();
+                    List<Task> tasks = taskDao.read();
                     currentTask = tasks.get(tasks.size() - 1);
                 }
 

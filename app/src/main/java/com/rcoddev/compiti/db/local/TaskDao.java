@@ -1,6 +1,5 @@
-package com.rcoddev.compiti.dao;
+package com.rcoddev.compiti.db.local;
 
-import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -8,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.rcoddev.compiti.db.DbHelper;
 import com.rcoddev.compiti.model.Task;
 
 import java.text.ParseException;
@@ -16,20 +16,19 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class TaskDAO implements ITaskDAO {
+public class TaskDao {
 
     private Context context;
     private SQLiteDatabase writer;
     private SQLiteDatabase reader;
 
-    public TaskDAO(Context context) {
+    public TaskDao(Context context) {
         this.context = context;
         DbHelper db = new DbHelper( context );
         writer = db.getWritableDatabase();
         reader = db.getReadableDatabase();
     }
 
-    @Override
     public boolean create(Task task) {
         ContentValues cv = new ContentValues();
         cv.put("name", task.getName());
@@ -52,7 +51,6 @@ public class TaskDAO implements ITaskDAO {
         return true;
     }
 
-    @Override
     public boolean update(Task task) {
         ContentValues cv = new ContentValues();
         cv.put("name", task.getName());
@@ -76,7 +74,6 @@ public class TaskDAO implements ITaskDAO {
         return true;
     }
 
-    @Override
     public boolean delete(Task task) {
         try {
             String[] args = { task.getId().toString() };
@@ -95,7 +92,6 @@ public class TaskDAO implements ITaskDAO {
         return true;
     }
 
-    @Override
     public List<Task> read() {
         List<Task> tasks = new ArrayList<>();
 

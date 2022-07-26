@@ -1,4 +1,4 @@
-package com.rcoddev.compiti.dao;
+package com.rcoddev.compiti.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

@@ -1,4 +1,4 @@
-package com.rcoddev.compiti.activity;
+package com.rcoddev.compiti.ui.main;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +10,7 @@ import android.view.View;
 import androidx.navigation.ui.AppBarConfiguration;
 
 import com.rcoddev.compiti.R;
+import com.rcoddev.compiti.ui.editor.TaskEditorActivity;
 import com.rcoddev.compiti.databinding.ActivityMainBinding;
 
 import android.view.Menu;
