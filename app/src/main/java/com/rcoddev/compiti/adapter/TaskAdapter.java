@@ -105,6 +105,12 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     public void reloadList() {
         tasksHashMap.clear();
 
+        try {
+            dbReference.getDatabase().setPersistenceEnabled(true);
+        } catch (Exception e) {
+
+        }
+
         dbReference.get().addOnCompleteListener(dataSnapshotTask -> {
             for (DataSnapshot child : dataSnapshotTask.getResult().getChildren()) {
                 Task task = child.getValue(Task.class);

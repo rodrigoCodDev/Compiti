@@ -21,7 +21,15 @@ public class TaskDao {
 
     public TaskDao(String userId) {
         FirebaseDatabase instance = FirebaseDatabase.getInstance();
+
+        try {
+            instance.setPersistenceEnabled(true);
+        } catch (Exception e) {
+
+        }
+
         dbReference = instance.getReference().child("users").child(userId).child("tasks");
+//        dbReference.keepSynced(true);
     }
 
     public DatabaseReference getDbReference() {
