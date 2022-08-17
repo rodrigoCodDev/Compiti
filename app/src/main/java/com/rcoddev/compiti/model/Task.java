@@ -3,23 +3,18 @@ package com.rcoddev.compiti.model;
 import com.orm.SugarRecord;
 import com.rcoddev.compiti.util.DateUtils;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Task {
+public class Task implements Serializable {
     private String name;
     private String annotation;
-    private String date;
+    private Date date;
 
     public Task() {}
 
-    public Task(TaskSql taskSql) {
-        this.name = taskSql.getName();
-        this.annotation = taskSql.getAnnotation();
-        this.date = DateUtils.formatDate(taskSql.getDate());
-    }
-
-    public Task(String name, String annotation, String date) {
+    public Task(String name, String annotation, Date date) {
         this.name = name;
         this.annotation = annotation;
         this.date = date;
@@ -41,11 +36,11 @@ public class Task {
         this.annotation = annotation;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 }

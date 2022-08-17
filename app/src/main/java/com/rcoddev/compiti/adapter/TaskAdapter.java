@@ -2,6 +2,7 @@ package com.rcoddev.compiti.adapter;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,18 +13,34 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.rcoddev.compiti.R;
-import com.rcoddev.compiti.model.TaskSql;
+import com.rcoddev.compiti.db.TaskDao;
+import com.rcoddev.compiti.model.Task;
+import com.rcoddev.compiti.model.User;
 import com.rcoddev.compiti.ui.editor.TaskEditorActivity;
+import com.rcoddev.compiti.util.DateUtils;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
+    private TaskDao taskDao;
+    private Map<String, Task> tasksHashMap;
+    private DatabaseReference dbReference;
 
-    private List<TaskSql> taskSqlList;
-
-    public TaskAdapter(List<TaskSql> taskSqlList) {
-        this.taskSqlList = taskSqlList;
+    public TaskAdapter(TaskDao taskDao) {
+        this.taskDao = taskDao;
+        tasksHashMap = new HashMap<>();
+        dbReference = taskDao.getDbReference();
     }
 
     @NonNull
@@ -36,10 +53,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
-        TaskSql taskSql = taskSqlList.get(position);
+        Task task = tasksHashMap.values().stream().collect(Collectors.toList()).get(position);
+        Date date = task.getDate();
 
-        holder.name.setText(taskSql.getName());
-        holder.date.setText(taskSql.getFormattedDate());
+        holder.name.setText(task.getName());
+        holder.date.setText(DateUtils.formatDate(date));
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,7 +65,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                 Toast.makeText( view.getContext(), "Edit", Toast.LENGTH_LONG).show();
 
                 Intent intent = new Intent( view.getContext(), TaskEditorActivity.class);
-                intent.putExtra("idSelectedTask", taskSql.getId());
+                intent.putExtra("currentTask", task);
 
                 view.getContext().startActivity( intent );
             }
@@ -59,15 +77,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                 AlertDialog.Builder dialog = new AlertDialog.Builder( view.getContext() );
 
                 dialog.setTitle("Confirm deletion");
-                dialog.setMessage("Do you want to delete the task \"" + taskSql.getName() + "\" ?");
+                dialog.setMessage("Do you want to delete the task \"" + task.getName() + "\" ?");
 
                 dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        taskSql.delete();
-
-                        taskSqlList = TaskSql.listAll(TaskSql.class);
-                        notifyDataSetChanged();
+                        taskDao.deleteTask(task);
+                        reloadList();
                     }
                 });
 
@@ -83,9 +99,21 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     @Override
     public int getItemCount() {
-        return taskSqlList.size();
+        return tasksHashMap.size();
     }
 
+    public void reloadList() {
+        tasksHashMap.clear();
+
+        dbReference.get().addOnCompleteListener(dataSnapshotTask -> {
+            for (DataSnapshot child : dataSnapshotTask.getResult().getChildren()) {
+                Task task = child.getValue(Task.class);
+                tasksHashMap.put(task.getName(), task);
+            }
+
+            notifyDataSetChanged();
+        });
+    }
 
     public class TaskViewHolder extends RecyclerView.ViewHolder {
 

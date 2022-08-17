@@ -1,6 +1,7 @@
 package com.rcoddev.compiti.ui.main;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +13,13 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 import com.rcoddev.compiti.R;
 import com.rcoddev.compiti.adapter.TaskAdapter;
 import com.rcoddev.compiti.databinding.FragmentFirstBinding;
-import com.rcoddev.compiti.model.TaskSql;
+import com.rcoddev.compiti.db.TaskDao;
+import com.rcoddev.compiti.model.Task;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +30,7 @@ public class FirstFragment extends Fragment {
 
     private RecyclerView recyclerTaskList;
     private TaskAdapter taskAdapter;
+    private FirebaseAuth user = FirebaseAuth.getInstance();
 
     @Override
     public View onCreateView(
@@ -42,42 +47,27 @@ public class FirstFragment extends Fragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        loadList();
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
-        loadList();
+        taskAdapter.reloadList();
     }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
-
     private void loadList() {
-        /*
-        TaskDao taskDao = new TaskDao(binding.getRoot().getContext());
-        List<Task> list = taskDao.read();
-         */
-
-        List<TaskSql> list = new ArrayList<>();
-        list = TaskSql.listAll(TaskSql.class);
-
-        taskAdapter = new TaskAdapter(list);
-
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager( getContext() );
         recyclerTaskList.setLayoutManager( layoutManager );
         recyclerTaskList.setHasFixedSize(true);
         recyclerTaskList.addItemDecoration( new DividerItemDecoration(getContext(), LinearLayout.VERTICAL));
-        recyclerTaskList.setAdapter( taskAdapter );
+
+        if (user.getCurrentUser() != null) {
+            String userId = user.getCurrentUser().getUid();
+            TaskDao taskDao = new TaskDao(userId);
+
+            taskAdapter = new TaskAdapter(taskDao);
+            recyclerTaskList.setAdapter( taskAdapter );
+        }
     }
 }

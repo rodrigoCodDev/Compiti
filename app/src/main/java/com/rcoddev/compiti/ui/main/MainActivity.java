@@ -5,61 +5,42 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.util.Log;
 import android.view.View;
 
 import androidx.navigation.ui.AppBarConfiguration;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.rcoddev.compiti.R;
-import com.rcoddev.compiti.model.Task;
-import com.rcoddev.compiti.model.TaskSql;
+import com.rcoddev.compiti.ui.authentication.AuthenticationActivity;
 import com.rcoddev.compiti.ui.editor.TaskEditorActivity;
 import com.rcoddev.compiti.databinding.ActivityMainBinding;
 
 import android.view.Menu;
 import android.view.MenuItem;
 
-import java.util.List;
-
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
 
+    private FirebaseAuth user = FirebaseAuth.getInstance();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        setSupportActionBar(binding.toolbar);
-
-        /*
-        DatabaseReference tasksRef = db.child("tasks");
-
-        List<TaskSql> taskSqls = TaskSql.listAll(TaskSql.class);
-
-        for (TaskSql myTaskSql : taskSqls) {
-            Task task = new Task(myTaskSql);
-            String id = myTaskSql.getId().toString();
-
-            tasksRef.child(id).setValue(task);
-        }
-         */
-
-        // NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        // appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-        // NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        checkAuthentication();
 
         binding.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), TaskEditorActivity.class);
-                startActivity( intent );
+                startActivity(intent);
             }
         });
     }
@@ -67,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        // getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
@@ -84,6 +65,19 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void checkAuthentication() {
+        if (user.getCurrentUser() == null) {
+            Intent intent = new Intent(getApplicationContext(), AuthenticationActivity.class);
+            startActivity(intent);
+            finish();
+        }
+    }
+
+    public void logout(View view) {
+        user.signOut();
+        checkAuthentication();
     }
 
 //    @Override

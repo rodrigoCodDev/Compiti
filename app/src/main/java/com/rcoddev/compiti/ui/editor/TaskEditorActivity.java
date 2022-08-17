@@ -9,70 +9,97 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.rcoddev.compiti.R;
 import com.rcoddev.compiti.databinding.ActivityTaskEditorBinding;
-import com.rcoddev.compiti.model.TaskSql;
+import com.rcoddev.compiti.db.TaskDao;
+import com.rcoddev.compiti.model.Task;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class TaskEditorActivity extends AppCompatActivity {
 
-    private ActivityTaskEditorBinding binding;
-    private TaskSql currentTaskSql;
+    private Task currentTask;
+    private TaskDao taskDao;
+
+    private TextInputEditText textInputName;
+    private TextInputEditText textInputAnnotation;
+
+    private DatabaseReference dbReference;
+    private FirebaseAuth user = FirebaseAuth.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_task_editor);
 
-        binding = ActivityTaskEditorBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-        View view = binding.getRoot();
+        textInputName = findViewById(R.id.textInputName);
+        textInputAnnotation = findViewById(R.id.textInputAnnotation);
 
-        Long idSelectedTask = (Long) getIntent().getSerializableExtra("idSelectedTask");
+        taskDao = new TaskDao(FirebaseAuth.getInstance().getUid());
+        dbReference = taskDao.getDbReference();
 
-        if ( idSelectedTask != null ){
-            currentTaskSql = TaskSql.findById(TaskSql.class, idSelectedTask);
+        this.currentTask = (Task) getIntent().getSerializableExtra("currentTask");
 
-            binding.textInputName.setText( currentTaskSql.getName() );
-            binding.textInputAnnotation.setText( currentTaskSql.getAnnotation() );
+        if (currentTask != null) {
+            textInputName.setText(currentTask.getName());
+            textInputAnnotation.setText(currentTask.getAnnotation());
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_task_editor, menu);
-        return true;
+    public void saveTask(View view) {
+        String name = textInputName.getText().toString();
+        String annotation = textInputAnnotation.getText().toString();
+
+        Task myTask = new Task();
+
+        myTask.setName(name);
+        myTask.setAnnotation(annotation);
+        myTask.setDate(new Date());
+
+        try {
+            if (currentTask != null) {
+                taskDao.deleteTask(currentTask);
+            }
+
+            if (!isUnique(myTask)) {
+                return;
+            }
+
+            taskDao.insertTask(myTask);
+
+        } catch (Exception e) {
+            onDestroy();
+        }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.check_task:
-                String name = binding.textInputName.getText().toString();
-                String annotation = binding.textInputAnnotation.getText().toString();
+    private boolean isUnique(Task task) {
+        Map<String, Task> tasksHashMap = new HashMap<>();
 
-                TaskSql myTaskSql = new TaskSql();
+        dbReference.get().addOnCompleteListener(dataSnapshotTask -> {
+            for (DataSnapshot child : dataSnapshotTask.getResult().getChildren()) {
+                Task childTask = child.getValue(Task.class);
+                tasksHashMap.put(task.getName(), childTask);
+            }
+        });
 
-                if (currentTaskSql != null) {
-                    myTaskSql = currentTaskSql;
-                }
+        List<Task> result = tasksHashMap.values()
+                .stream()
+                .filter(x -> x.getName().equals(task.getName()))
+                .collect(Collectors.toList());
 
-                myTaskSql.setName(name);
-                myTaskSql.setAnnotation(annotation);
-                myTaskSql.setDate(new Date());
-
-                try {
-                    myTaskSql.save();
-                } catch (Exception e) {
-                    Log.e("Erro ao salvar", e.getMessage());
-                    onDestroy();
-                }
-
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
+        if (result.isEmpty()) {
+            return true;
         }
+
+        return false;
     }
 }
